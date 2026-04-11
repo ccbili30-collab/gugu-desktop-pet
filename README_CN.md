@@ -16,7 +16,8 @@
   💬 已飞行 147 次  |  投喂 3 次
 ```
 
-**咕咕 (Gugu)** 是一只活在你 Windows 桌面上的像素鸽子。
+**咕咕 (Gugu)** 是一只活在你桌面上的像素鸽子。  
+支持 **Windows**（主线）和 **macOS**（移植分支 `macos-port`）。
 
 它有自己的想法——累了会睡，无聊会飞，心情好会打滚，被冷落会盯着你看。  
 你不需要 24 小时照顾它，但它**记得你说过的每一句话**。
@@ -35,7 +36,7 @@
 
 ---
 
-## 🚀 30 秒上手
+## 🚀 30 秒上手（Windows）
 
 ```
 1. 下载 zip 包，解压到任意目录
@@ -47,6 +48,28 @@
 
 不需要 `pip install`，不需要 `git clone`，不需要碰终端。  
 一键安装，一键启动，**给妈妈也能用**。
+
+---
+
+## 🍎 macOS 安装（移植版）
+
+> macOS 版在 [`macos-port`](https://github.com/ccbili30-collab/gugu-desktop-pet/tree/macos-port) 分支，详见 [SETUP_MAC.md](SETUP_MAC.md)。
+
+```bash
+# 1. 克隆 mac 分支
+git clone -b macos-port https://github.com/ccbili30-collab/gugu-desktop-pet.git
+cd gugu-desktop-pet
+
+# 2. 安装依赖
+pip install -r requirements.txt -r requirements_mac.txt
+
+# 3. 启动
+python3 app/launcher_mac.py
+```
+
+首次运行会弹出辅助功能授权请求（跟随鼠标功能需要），允许即可。
+
+**macOS 版技术方案**：pygame 渲染 + pyobjc NSWindow 透明置顶，brain/bridge/art 层零修改复用。
 
 ---
 
@@ -168,12 +191,24 @@ llm:
 
 ## 📋 系统要求
 
+### Windows（主线）
+
 | 项目 | 要求 |
 |---|---|
 | 系统 | Windows 10 / 11 |
 | Python | 3.10+（推荐 3.11） |
 | 内存 | 后台运行 < 50MB |
 | 权限 | 无需管理员权限 |
+
+### macOS（移植版，`macos-port` 分支）
+
+| 项目 | 要求 |
+|---|---|
+| 系统 | macOS 12 Monterey 或更高 |
+| Python | 3.10+（推荐 3.11/3.12） |
+| 芯片 | Apple Silicon / Intel 均支持 |
+| 额外依赖 | pygame、pyobjc（见 `requirements_mac.txt`） |
+| 权限 | 辅助功能权限（跟随鼠标功能） |
 
 ---
 
