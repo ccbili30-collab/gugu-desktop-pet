@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# 用户运行时数据（不上传，每个用户自己的）
+runtime/pet_conversation_history.json
+runtime/pet_action_events.json
+runtime/pet_action_command.json
+runtime/pet_manual_control.json
+runtime/brain_status.json
+runtime/pet_status.json
+
+# 用户配置和状态（包含个人信息）
+state.json
+config.yaml
+memory/
+
+# 打包产物
+*.zip
+*.exe
+*.spec
+gugupet_v2.zip
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 日志
+*.log
+logs/
