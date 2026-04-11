@@ -51,8 +51,10 @@ from ui.widgets import (
 )
 
 REFRESH_MS = 1200
-CREATE_NO_WINDOW = 0x08000000
-DETACHED_PROCESS = 0x00000008
+# Windows process-creation flags — not used on macOS but kept as 0 so any
+# accidental reference doesn't break.
+CREATE_NO_WINDOW = 0x08000000 if sys.platform == "win32" else 0
+DETACHED_PROCESS = 0x00000008 if sys.platform == "win32" else 0
 PROCESS_FLAGS = CREATE_NO_WINDOW | DETACHED_PROCESS
 
 _DRIVE_LABELS = {
@@ -103,13 +105,15 @@ def _pid_of(pid_name: str) -> int | None:
 
 
 def _start_pet() -> None:
+    kwargs: dict = dict(cwd=str(_ROOT), close_fds=True)
+    if sys.platform == "win32":
+        kwargs["creationflags"] = PROCESS_FLAGS
+    # On macOS pick launcher_mac.py if it exists, else fall back to launcher.py
+    launcher = _ROOT / "app" / "launcher_mac.py"
+    if not launcher.exists():
+        launcher = _ROOT / "app" / "launcher.py"
     try:
-        subprocess.Popen(
-            [_preferred_python(), str(_ROOT / "app" / "launcher.py")],
-            cwd=str(_ROOT),
-            creationflags=PROCESS_FLAGS,
-            close_fds=True,
-        )
+        subprocess.Popen([_preferred_python(), str(launcher)], **kwargs)
     except Exception as e:
         print(f"[panel] start failed: {e}")
 
@@ -161,7 +165,7 @@ class ControlPanel:
             text="咕咕桌宠",
             bg=BG,
             fg=FG_DARK,
-            font=("Microsoft YaHei UI", 20, "bold"),
+            font=(*FONT_TITLE[:1], 20, "bold"),
         ).pack(anchor="w", padx=22, pady=(18, 2))
         tk.Label(shell, text="控制面板", bg=BG, fg=FG_LIGHT, font=FONT_LABEL).pack(
             anchor="w", padx=22, pady=(0, 14)
@@ -434,12 +438,12 @@ class ControlPanel:
         _stop_pet()
         self._status_var.set("正在更新…")
         self.root.update_idletasks()
+        kwargs: dict = dict(cwd=str(_ROOT), close_fds=True)
+        if sys.platform == "win32":
+            kwargs["creationflags"] = 0  # show window for progress
         try:
             subprocess.Popen(
-                [_preferred_python(), str(_ROOT / "do_update.py")],
-                cwd=str(_ROOT),
-                creationflags=0,  # show the window so user can see progress
-                close_fds=True,
+                [_preferred_python(), str(_ROOT / "do_update.py")], **kwargs
             )
         except Exception as e:
             self._status_var.set(f"更新失败: {e}")

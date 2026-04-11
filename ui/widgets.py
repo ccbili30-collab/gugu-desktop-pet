@@ -1,10 +1,29 @@
-"""Shared UI widgets for gugupet_v2 control panel."""
+"""Shared UI widgets for gugupet_v2 control panel.
+
+macOS font mapping
+------------------
+  Bahnschrift SemiBold  → SF Pro Display (system default on macOS)
+  Microsoft YaHei UI   → PingFang SC
+  Consolas             → Menlo
+"""
 
 from __future__ import annotations
 
+import sys
 import tkinter as tk
 from typing import Callable
 
+# Pick fonts by platform
+if sys.platform == "darwin":
+    _TITLE_FONT = "SF Pro Display"
+    _LABEL_FONT = "PingFang SC"
+    _MONO_FONT = "Menlo"
+    _BOLD_FONT = "SF Pro Display"
+else:
+    _TITLE_FONT = "Bahnschrift SemiBold"
+    _LABEL_FONT = "Microsoft YaHei UI"
+    _MONO_FONT = "Consolas"
+    _BOLD_FONT = "Bahnschrift SemiBold"
 
 BG = "#F3E9D3"
 BG_CARD = "#F7EFDF"
@@ -15,12 +34,12 @@ FG_LIGHT = "#7A6F60"
 BORDER = "#D6C5A8"
 ACCENT_GREEN = "#2F7A64"
 ACCENT_SAND = "#EADBC3"
-FONT_TITLE = ("Bahnschrift SemiBold", 14)
-FONT_LABEL = ("Microsoft YaHei UI", 10)
-FONT_SMALL = ("Microsoft YaHei UI", 9)
-FONT_MONO = ("Consolas", 10)
-FONT_MONO_SM = ("Consolas", 9)
-FONT_BOLD = ("Bahnschrift SemiBold", 10)
+FONT_TITLE = (_TITLE_FONT, 14)
+FONT_LABEL = (_LABEL_FONT, 10)
+FONT_SMALL = (_LABEL_FONT, 9)
+FONT_MONO = (_MONO_FONT, 10)
+FONT_MONO_SM = (_MONO_FONT, 9)
+FONT_BOLD = (_BOLD_FONT, 10)
 
 
 def card(parent: tk.Widget, **kw) -> tk.Frame:
@@ -145,8 +164,15 @@ def scrolled_frame(parent: tk.Widget, bg: str = BG) -> tuple[tk.Canvas, tk.Frame
         "<Configure>", lambda _e: canvas.configure(scrollregion=canvas.bbox("all"))
     )
     canvas.bind("<Configure>", lambda e: canvas.itemconfigure(win_id, width=e.width))
-    canvas.bind_all(
-        "<MouseWheel>",
-        lambda e: canvas.yview_scroll(int(-1 * (e.delta / 120)), "units"),
-    )
+    if sys.platform == "darwin":
+        # macOS: delta is already in lines, no /120 needed
+        canvas.bind_all(
+            "<MouseWheel>",
+            lambda e: canvas.yview_scroll(int(-1 * e.delta), "units"),
+        )
+    else:
+        canvas.bind_all(
+            "<MouseWheel>",
+            lambda e: canvas.yview_scroll(int(-1 * (e.delta / 120)), "units"),
+        )
     return canvas, inner

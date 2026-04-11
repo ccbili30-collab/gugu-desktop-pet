@@ -1,0 +1,19 @@
+# gugupet_v2_mac — macOS 额外依赖
+# 在项目根目录执行：pip install -r requirements_mac.txt
+
+# ── 渲染核心 ──────────────────────────────────────────────────────────
+pygame>=2.5.2           # 像素艺术渲染 + 主循环
+
+# ── pyobjc（透明置顶窗口 + 鼠标坐标）────────────────────────────────
+pyobjc-core>=10.0
+pyobjc-framework-Cocoa>=10.0    # NSWindow / NSPanel / NSColor
+pyobjc-framework-Quartz>=10.0   # CGEventCreate / CGEventGetLocation
+pyobjc-framework-AppKit>=10.0   # NSScreen.visibleFrame
+
+# ── 图像 / 气泡渲染（与 Windows 版共用）─────────────────────────────
+pillow>=10.0
+
+# ── 其余依赖与 Windows 版相同（requirements.txt 已列出）─────────────
+# pyyaml
+# requests
+# openai  （或项目自用 LLM client）
